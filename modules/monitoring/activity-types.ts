@@ -1,0 +1,4 @@
+export type ActivityEvidence={kind:"materials"|"assignments"|"assessments";id:number;title:string;status:string};
+export type ActivityRow={review_status?:"review"|"monitor"|"resolved"|"";user_id:number;class_id:number;subject_id:number;name:string;identifier:string;class_name:string;subject:string;teachers:string;materials:number;opened:number;trackable:number;tasks:number;submitted:number;overdue:number;late:number;graded:number;exams:number;exam_done:number;pending_grade:number;deleted:number;average:number|null;reasons:string[];evidence:ActivityEvidence[]};
+export type ActivityReview={id:number;user_id:number;class_id:number;subject_id:number;name:string;author:string;status:"review"|"monitor"|"resolved";note:string;at:string};
+export type ActivityReport={from:string;to:string;as_of:string;tracking_since:string;students:ActivityRow[];teachers:ActivityRow[];days:{day:string;published:number;submitted:number;opened:number}[];reviews:ActivityReview[]};

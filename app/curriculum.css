@@ -1,0 +1,15 @@
+.curriculum-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; padding: 24px; }
+.curriculum-filters .form-field { flex: 1 1 180px; min-width: 0; margin: 0; }
+.curriculum-filters .form-field:first-child { flex-grow: 2; }
+.curriculum-progress { display: grid; gap: 8px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.curriculum-progress > span { display: flex; justify-content: space-between; gap: 16px; }
+.curriculum-progress small { color: var(--muted); }
+.curriculum-progress progress { appearance: none; width: 100%; height: 8px; border: 0; border-radius: var(--radius-sm); overflow: hidden; background: var(--border); }
+.curriculum-progress progress::-webkit-progress-bar { background: var(--border); border-radius: var(--radius-sm); }
+.curriculum-progress progress::-webkit-progress-value { background: var(--primary); border-radius: var(--radius-sm); }
+.curriculum-progress progress::-moz-progress-bar { background: var(--primary); border-radius: var(--radius-sm); }
+.school-summary-note { margin-bottom: 24px; }
+.curriculum-report-summary { display: flex; gap: 24px; flex-wrap: wrap; margin: 24px 0; }
+.curriculum-report-summary > div { flex: 1 1 150px; }
+.curriculum-report-summary strong { display: block; font-size: 24px; }
+@media (max-width: 640px) { .curriculum-filters { padding: 16px; } .curriculum-filters .form-field { flex-basis: 100%; } }

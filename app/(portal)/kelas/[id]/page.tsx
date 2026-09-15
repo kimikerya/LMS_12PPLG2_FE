@@ -1,3 +1,5 @@
+import { TeacherClassroom } from "@/modules/teacher/classroom";
+import { MonitoringClassroom } from "@/modules/monitoring/classroom";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireSession } from "@/modules/auth/session";
@@ -17,9 +19,10 @@ export default async function ClassDetailPage({ params, searchParams }: { params
   const session = await requireSession(); const { id } = await params; const { tab: raw, saved, user_saved } = await searchParams;
   const tab = Object.hasOwn(tabs, raw ?? "") ? raw as keyof typeof tabs : "ringkasan";
   const classroom = await classDetail(id, session.token);
+  if (["curriculum", "principal"].includes(session.identity.role)) return <MonitoringClassroom classroom={classroom} tab={raw} />;
   if (session.identity.role === "student") redirect(`/kelas?kelas=${classroom.id}`);
-  const teacher = session.identity.role === "teacher";
-  if (session.identity.role !== "admin") return <LearningClass classroom={classroom} teacher={teacher} saved={saved === "1"} />;
+  if (session.identity.role === "teacher") return <TeacherClassroom classroom={classroom} tab={raw}/>;
+  if (session.identity.role !== "admin") return <LearningClass classroom={classroom} teacher={false} saved={saved === "1"} />;
   const [users, options] = await Promise.all([
     tab === "siswa" || tab === "guru" ? backend<{ data: User[] }>(`/api/users?role=${tab === "siswa" ? "student" : "teacher"}`, { token: session.token }) : Promise.resolve({ data: [] }),
     tab === "guru" ? backend<AcademicOptions>("/api/academic-options", { token: session.token }) : Promise.resolve(null),

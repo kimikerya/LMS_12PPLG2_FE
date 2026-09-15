@@ -17,6 +17,7 @@
 
 # next.js
 /.next/
+/.next-form-tests/
 /out/
 
 # production
@@ -45,3 +46,13 @@ next-env.d.ts
 
 /.local/
 CODEX_FRONTEND_HANDOFF.md
+
+# Suite E2E hanya dipakai untuk pengembangan lokal.
+/tests/
+/playwright.curriculum.config.ts
+/playwright.monitoring.config.ts
+
+# Catatan dan konfigurasi pengembangan lokal.
+/docs/
+/AGENTS.md
+/playwright*.config.ts

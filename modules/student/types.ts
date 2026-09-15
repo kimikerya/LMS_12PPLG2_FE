@@ -1,5 +1,6 @@
 export type Kind = "materials" | "assignments" | "assessments";
 export type Content = {
+  attachments?: import("@/modules/assignments/attachments").Attachment[];
   id: number; title: string; teacher_name: string; class_id: number | null; subject_id: number | null;
   status: string; description: string | null; instructions: string | null;
   published_at: string | null; due_at: string | null; close_at: string | null;
@@ -9,6 +10,8 @@ export type Content = {
   submission_status: string | null; submitted_at: string | null;
 };
 export type Submission = {
+  is_late?: boolean | null;
+  files?: import("@/modules/assignments/attachments").Attachment[];
   id: number; submission_type: string; text_answer: string | null; link_url: string | null;
   submitted_at: string | null; status: string; score: number | null;
   teacher_feedback: string | null; result_released_at: string | null;

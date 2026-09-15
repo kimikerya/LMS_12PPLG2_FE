@@ -11,7 +11,7 @@ export async function login(_previous: LoginState, formData: FormData): Promise<
   const password = formData.get("password");
   if (typeof loginID !== "string" || !loginID.trim() || loginID.length > 100
     || typeof password !== "string" || !password || new TextEncoder().encode(password).length > 72) {
-    return { error: "Isi ID pengguna dan kata sandi yang valid." };
+    return { error: "Isi NIS atau NIP / nomor pegawai dan kata sandi yang valid." };
   }
   let token: string;
   let expiresAt: number;
@@ -24,8 +24,8 @@ export async function login(_previous: LoginState, formData: FormData): Promise<
     expiresAt = identity.exp;
   } catch (error) {
     return { error: error instanceof ApiError && error.status === 401
-      ? "ID pengguna atau kata sandi salah, atau akun belum aktif."
-      : "Layanan sekolah belum dapat dihubungi. Silakan coba kembali." };
+      ? "NIS/NIP atau kata sandi salah, identitas belum unik, atau akun belum aktif. Hubungi admin jika perlu bantuan."
+      : error instanceof ApiError && error.status === 429 ? error.message : "Layanan sekolah belum dapat dihubungi. Silakan coba kembali." };
   }
   (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,

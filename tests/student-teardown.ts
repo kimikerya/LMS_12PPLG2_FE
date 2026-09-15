@@ -1,3 +1,0 @@
-export default async function teardown() {
-  await fetch("http://127.0.0.1:8088/__shutdown").catch(() => undefined);
-}

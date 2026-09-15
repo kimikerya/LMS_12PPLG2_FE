@@ -4,7 +4,7 @@ export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
 }
 
-export async function backend<T>(path: string, options: { token?: string; method?: string; body?: unknown } = {}): Promise<T> {
+export async function backend<T>(path: string, options: { token?: string; method?: string; body?: unknown; timeout?: number } = {}): Promise<T> {
   const base = process.env.BACKEND_URL ?? "http://127.0.0.1:8080";
   let response: Response;
   try {
@@ -13,7 +13,7 @@ export async function backend<T>(path: string, options: { token?: string; method
       headers: { "Content-Type": "application/json", ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}) },
       ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
       cache: "no-store",
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(options.timeout ?? 10_000),
     });
   } catch {
     throw new ApiError(503, "Layanan sekolah belum dapat dihubungi. Silakan coba kembali.");
@@ -28,6 +28,7 @@ export async function backend<T>(path: string, options: { token?: string; method
       403: "Akun Anda tidak memiliki akses ke halaman ini.",
       404: "Data yang Anda cari belum tersedia.",
       400: "Data yang dikirim belum valid. Periksa isian formulir.",
+      429: "Terlalu banyak percobaan masuk. Tunggu 1 menit lalu coba kembali.",
     };
     throw new ApiError(response.status, messages[response.status] ?? "Data belum dapat dimuat. Silakan coba kembali.");
   }

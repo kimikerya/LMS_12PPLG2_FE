@@ -17,7 +17,7 @@ export const features = [
 
 export const faqs = [
   { question: "Siapa yang dapat menggunakan portal ini?", answer: "Siswa, guru, administrator, staf kurikulum, dan kepala sekolah yang sudah memiliki akun sekolah. Semua menggunakan halaman masuk yang sama." },
-  { question: "Bagaimana cara mendapatkan akun?", answer: "Akun dibuat oleh administrator sekolah. Hubungi administrator atau tata usaha untuk mendapatkan ID pengguna dan kata sandi. Tidak ada pendaftaran akun mandiri." },
+  { question: "Bagaimana cara mendapatkan akun?", answer: "Akun dibuat oleh administrator sekolah. Login menggunakan NIS untuk siswa atau NIP/nomor pegawai untuk guru dan staf, beserta kata sandi. Hubungi administrator atau tata usaha untuk bantuan. Tidak ada pendaftaran akun mandiri." },
   { question: "Apa yang harus dilakukan jika lupa kata sandi?", answer: "Hubungi administrator sekolah untuk bantuan pemulihan akun. Jangan membagikan kata sandi kepada orang lain." },
   { question: "Mengapa kelas atau tugas saya belum terlihat?", answer: "Pastikan Anda masuk menggunakan akun yang benar. Kelas dan kegiatan ditampilkan sesuai keanggotaan dan izin akun. Hubungi administrator jika akses belum sesuai." },
 ] as const;

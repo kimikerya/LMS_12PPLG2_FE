@@ -1,3 +1,5 @@
+import { TeacherLearningPage } from "@/modules/teacher/content";
+import { MonitoringLearningPage } from "@/modules/monitoring/learning";
 import { authorizedData, requireSession } from "@/modules/auth/session";
 import { StudentLearningPage } from "@/modules/student/learning-page";
 import { redirect } from "next/navigation";
@@ -12,6 +14,8 @@ type Content = {
 const statuses: Record<string, string> = { draft: "Draft", published: "Diterbitkan", closed: "Ditutup" };
 
 export async function LearningPage({ kind }: { kind: LearningKind }) {
+  if (["curriculum", "principal"].includes((await requireSession()).identity.role)) return <MonitoringLearningPage kind={kind} />;
+  if ((await requireSession()).identity.role === "teacher") return <TeacherLearningPage kind={kind} />;
   if ((await requireSession()).identity.role === "student") return <StudentLearningPage kind={kind} />;
   if ((await requireSession()).identity.role === "admin") redirect("/kelas");
   const c = learningModules[kind];

@@ -3,7 +3,7 @@ import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import { ApiError, backend } from "@/lib/api";
 import { requireSession } from "@/modules/auth/session";
-import type { Classroom, ClassDetail } from "@/modules/classes/types";
+import { classWorkspace } from "@/modules/classes/data";
 import type { UserDetail } from "@/modules/users/types";
 import type { Content, Kind, Submission } from "./types";
 
@@ -21,13 +21,7 @@ export const studentProfile = cache(async () => {
 });
 export const studentClasses = cache(async () => {
   const { token } = await studentSession();
-  const { data } = await backend<{data: Classroom[]}>("/api/classes", {token});
-  const details: ClassDetail[] = [];
-  // Bound the fan-out when a student belongs to many classes.
-  for (let i = 0; i < data.length; i += 6) {
-    details.push(...await Promise.all(data.slice(i, i + 6).map(c => backend<ClassDetail>(`/api/classes/${c.id}`, {token}))));
-  }
-  return details;
+  return classWorkspace(token);
 });
 export const studentContent = cache(async (kind: Kind, classID?: number, subjectID?: number) => {
   const { token } = await studentSession();
@@ -47,4 +41,13 @@ export async function studentDetail(kind: Kind, id: string) {
 export async function studentSubmissions(id: number) {
   const {token} = await studentSession();
   return (await backend<{data: Submission[]}>(`/api/assignments/${id}/submissions`, {token})).data;
+}
+export type AssessmentReview = {
+  id: number; submitted_at: string | null; result_released_at: string | null;
+  score: number | null; max_points: number | null;
+  answers: { id: number; order: number; question: string; answer: string | null; points: number | null; max_points: number; feedback: string | null; options: string[] }[];
+};
+export async function studentAssessmentResults(id: number) {
+  const { token } = await studentSession();
+  return (await backend<{ data: AssessmentReview[] }>(`/api/assessments/${id}/results`, { token })).data;
 }

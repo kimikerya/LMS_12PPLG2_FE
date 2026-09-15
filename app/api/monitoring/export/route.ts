@@ -1,0 +1,6 @@
+import { getSession } from "@/modules/auth/session";
+export async function GET(request:Request){
+ const session=await getSession();if(session.kind!=="authenticated")return Response.json({error:"Sesi tidak tersedia."},{status:401});if(!["curriculum","principal"].includes(session.identity.role))return Response.json({error:"Akses tidak diizinkan."},{status:403});
+ const input=new URL(request.url).searchParams;const params=new URLSearchParams();for(const key of ["from","to","class_id"]){const v=input.get(key);if(v)params.set(key,v);}
+ try{const response=await fetch(new URL(`/api/monitoring/export?${params}`,process.env.BACKEND_URL??"http://127.0.0.1:8080"),{headers:{Authorization:`Bearer ${session.token}`},cache:"no-store",signal:AbortSignal.timeout(60000)});if(!response.ok)return Response.json({error:"Laporan belum dapat diekspor. Periksa periode dan coba kembali."},{status:response.status});return new Response(response.body,{headers:{"Content-Type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","Content-Disposition":"attachment; filename=laporan-aktivitas.xlsx","Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff"}});}catch{return Response.json({error:"Layanan laporan belum tersedia."},{status:503});}
+}

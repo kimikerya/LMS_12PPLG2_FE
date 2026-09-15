@@ -2,16 +2,16 @@ import Link from "next/link";
 import { Icon } from "@/components/icon";
 import { ClassList } from "@/modules/classes/class-list";
 import type { Classroom } from "@/modules/classes/types";
-import type { User } from "@/modules/users/types";
+export type UserSummary = { students: number; teachers: number; active: number };
 
 export function AdminDashboard({ classes, users, loginID, date }: {
-  classes: Classroom[]; users: User[]; loginID: string; date: string;
+  classes: Classroom[]; users: UserSummary; loginID: string; date: string;
 }) {
   const stats = [
     { label: "Total kelas", value: classes.length, href: "/kelas", icon: "classes" as const, tone: "blue" },
-    { label: "Total siswa", value: users.filter(u => u.role === "student").length, href: "/pengguna?role=student", icon: "users" as const, tone: "mint" },
-    { label: "Total guru", value: users.filter(u => u.role === "teacher").length, href: "/pengguna?role=teacher", icon: "school" as const, tone: "cyan" },
-    { label: "Akun aktif", value: users.filter(u => u.status === "active").length, href: "/pengguna?status=active", icon: "users" as const, tone: "blue" },
+    { label: "Total siswa", value: users.students, href: "/pengguna?role=student", icon: "users" as const, tone: "mint" },
+    { label: "Total guru", value: users.teachers, href: "/pengguna?role=teacher", icon: "school" as const, tone: "cyan" },
+    { label: "Akun aktif", value: users.active, href: "/pengguna?status=active", icon: "users" as const, tone: "blue" },
   ];
   return <>
     <div className="page-heading"><div><h1>Halaman Utama</h1><p>Selamat datang, {loginID}. Berikut ringkasan administrasi sekolah.</p></div></div>

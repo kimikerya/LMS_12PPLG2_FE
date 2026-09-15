@@ -1,0 +1,8 @@
+.assignment-upload-section{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 0;margin:12px 0 24px}
+.assignment-link-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) 40px;gap:12px;align-items:center;margin-top:20px}
+.assignment-picked-files,.assignment-attachments ul{list-style:none;padding:0;display:grid;gap:12px}
+.assignment-picked-files li,.assignment-attachments li{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface,#fff)}
+.assignment-picked-files li>span,.assignment-attachments li>div{flex:1;min-width:0;overflow-wrap:anywhere}
+.assignment-picked-files small,.assignment-attachments small{display:block;color:var(--text-muted);font-size:12px;margin-top:6px}
+.assignment-attachments{margin-top:24px;min-width:0}.assignment-attachments .button{flex:none}
+@media(max-width:600px){.assignment-link-fields{grid-template-columns:minmax(0,1fr) 40px}.assignment-link-fields>.form-field:first-child{grid-column:1/-1}.assignment-attachments li{align-items:flex-start;flex-wrap:wrap}.assignment-attachments li>div{flex-basis:100%}}

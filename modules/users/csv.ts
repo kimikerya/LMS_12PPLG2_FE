@@ -1,4 +1,5 @@
 import { roleLabels, type Role } from "@/modules/auth/types";
+import { PASSWORD_ERROR, validPassword } from "@/modules/auth/password-policy";
 
 export const csvColumns = ["login_id", "full_name", "email", "role", "password", "nis", "nisn", "nik", "nuptk", "employee_id", "birth_place", "birth_date", "phone"] as const;
 export type ImportUser = Record<typeof csvColumns[number], string> & { status: string };
@@ -20,8 +21,8 @@ export function validateUser(user: Partial<ImportUser>, create = true): string[]
   }
   if (user.phone && (user.phone.length > 25 || !/^\+?[0-9][0-9 ()-]{6,23}[0-9]$/.test(user.phone))) errors.push("Nomor HP tidak valid (8–25 karakter)");
   if (!Object.hasOwn(roleLabels, user.role ?? "")) errors.push("Peran tidak valid");
-  const passwordLength = new TextEncoder().encode(user.password ?? "").length;
-  if ((create || passwordLength > 0) && (passwordLength < 8 || passwordLength > 72)) errors.push("Kata sandi harus 8–72 byte");
+  const password = user.password ?? "";
+  if ((create || password !== "") && !validPassword(password)) errors.push(PASSWORD_ERROR);
   if (user.role === "student" && !user.nis?.trim()) errors.push("NIS wajib untuk siswa");
   for (const key of ["nis", "nisn", "nik", "nuptk", "employee_id"] as const) if ((user[key]?.length ?? 0) > 50) errors.push(`${key.toUpperCase()} maksimal 50 karakter`);
   return errors;

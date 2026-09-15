@@ -84,7 +84,11 @@ input::placeholder { color: #96a0b2; }
 .nav-dot { margin-left: auto; width: 5px; height: 5px; border-radius: 50%; background: var(--blue); }
 .sidebar-bottom { margin-top: auto; padding-top: 28px; }
 .account { border-top: 1px solid var(--border); padding: 23px 2px; margin-top: 15px; display: flex; gap: 10px; align-items: center; }
-.account > span:nth-child(2) { flex: 1; min-width: 0; }
+.account-profile { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; padding: 8px 4px; border-radius: var(--radius-md); transition: background .2s ease-out; }
+.account-profile:hover, .account-profile[aria-current="page"] { background: var(--background); }
+.account-info { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.account > form { flex-shrink: 0; }
+@media (prefers-reduced-motion: reduce) { .account-profile { transition: none; } }
 .account strong { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
 .account small { display: block; color: var(--muted); font-size: 12px; }
 .avatar { display: inline-grid; place-items: center; background: #eaf0ff; color: #5372b5; font-size: 12px; font-weight: 700; border-radius: 50%; width: 34px; height: 34px; flex-shrink: 0; }

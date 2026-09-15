@@ -17,4 +17,4 @@ export function mutationError(error: unknown) {
 export function formText(data: FormData, key: string) { const value = data.get(key); return typeof value === "string" ? value.trim() : ""; }
 export function positiveID(value: string | number) { const id = Number(value); if (!Number.isSafeInteger(id) || id < 1) throw new ApiError(422, "Pilihan data tidak valid."); return id; }
 
-export async function requireClassCreator() { const session = await requireSession(); if (!["admin", "teacher"].includes(session.identity.role)) throw new ApiError(403, "Akses khusus admin dan guru."); return session; }
+export async function requireClassCreator() { return requireAdmin(); }

@@ -1,0 +1,14 @@
+import { date } from "./helpers";
+import type { Submission } from "./types";
+import { studentAssessmentResults } from "./data";
+
+export function AssignmentResult({ submission, maxPoints }: { submission: Submission; maxPoints: number | null }) {
+  const released = !!submission.result_released_at;
+  return <section className="panel" id="hasil-penilaian"><div className="section-heading"><h2>Hasil penilaian tugas</h2><span className={`badge ${released ? "" : "neutral"}`}>{released ? "Hasil dirilis" : "Menunggu hasil"}</span></div>
+    {released ? <><div className="student-grade"><span>Nilai Anda</span><strong>{submission.score ?? "—"}{maxPoints !== null && <small> / {maxPoints}</small>}</strong><small>Dirilis {date(submission.result_released_at,true)}</small></div><h3>Umpan balik guru</h3><p className="preserve-lines">{submission.teacher_feedback || "Guru belum menambahkan umpan balik."}</p></> : <p className="muted">Jawaban Anda sudah diterima. Nilai dan umpan balik akan tampil setelah guru merilis hasil penilaian.</p>}
+  </section>;
+}
+export async function AssessmentResults({ id, results: supplied }: { id: number; results?: Awaited<ReturnType<typeof studentAssessmentResults>> }) {
+  const results = supplied ?? await studentAssessmentResults(id);
+  return <section className="panel" id="hasil-penilaian"><h2>Hasil penilaian asesmen</h2>{results.length ? results.map((r,index) => <article key={r.id} className="panel"><div className="section-heading"><h3>Pengerjaan {results.length-index}</h3><span className={`badge ${r.result_released_at ? "" : "neutral"}`}>{r.result_released_at ? "Hasil dirilis" : "Menunggu hasil"}</span></div><p className="muted">Dikumpulkan {date(r.submitted_at,true)}</p>{r.result_released_at ? <><div className="student-grade"><span>Nilai Anda</span><strong>{r.score ?? "—"}{r.max_points !== null && <small> / {r.max_points}</small>}</strong><small>Dirilis {date(r.result_released_at,true)}</small></div><h3>Tinjauan jawaban</h3>{r.answers.length ? r.answers.map(answer => <div key={answer.id} className="panel"><h3>Soal {answer.order}</h3><p className="preserve-lines">{answer.question}</p><strong>Jawaban Anda</strong><p className="preserve-lines">{answer.answer || answer.options.join("\n") || "Tidak ada jawaban."}</p><p>Nilai soal: {answer.points ?? "Belum dinilai"} / {answer.max_points}</p><strong>Umpan balik guru</strong><p className="preserve-lines">{answer.feedback || "Belum ada umpan balik."}</p></div>) : <p className="muted">Rincian jawaban belum tersedia.</p>}</> : <p className="muted">Pengerjaan sudah tersimpan. Nilai dan tinjauan jawaban akan tampil setelah hasil dirilis oleh guru.</p>}</article>) : <p className="muted">Belum ada pengerjaan asesmen yang dikumpulkan. Hasil akan muncul di sini setelah pengerjaan tersimpan.</p>}</section>;
+}
