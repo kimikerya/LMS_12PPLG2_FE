@@ -17,7 +17,7 @@ function Donut({title,description,unit,slices}:{title:string;description:string;
    <div className="activity-donut-visual">
     <svg viewBox="0 0 200 200" role="img" aria-label={`${title}: ${total? slices.map(slice=>`${slice.label} ${number(slice.value)} (${percent(slice.value)})`).join(", "):"Belum ada data"}`}>
      <circle cx="100" cy="100" r="78" fill="none" stroke="#edf2fa" strokeWidth="22"/>
-     {total>0&&slices.map((slice,index)=>slice.value>0&&<circle key={slice.label} cx="100" cy="100" r="78" fill="none" stroke={slice.color} strokeWidth="22" pathLength="100" strokeDasharray={`${slice.value/total*100} 100`} strokeDashoffset={-slices.slice(0,index).reduce((sum,s)=>sum+s.value,0)/total*100} transform="rotate(-90 100 100)" opacity={selected&&selected!==slice.label?0.22:1}><title>{slice.label}: {number(slice.value)} ({percent(slice.value)})</title></circle>)}
+     {total>0&&slices.map((slice,index)=>slice.value>0&&<circle key={slice.label} cx="100" cy="100" r="78" fill="none" stroke={slice.color} strokeWidth="22" pathLength="100" strokeDasharray={`${slice.value/total*100} 100`} strokeDashoffset={-slices.slice(0,index).reduce((sum,s)=>sum+s.value,0)/total*100} transform="rotate(-90 100 100)" opacity={selected&&selected!==slice.label?0.22:1}/>)}
     </svg>
     <div className="activity-donut-center" aria-hidden="true"><strong>{number(active?.value??total)}</strong><span>{active?percent(active.value):unit}</span></div>
    </div>
