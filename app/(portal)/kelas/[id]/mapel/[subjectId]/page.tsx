@@ -1,6 +1,6 @@
 import { requireSession } from "@/modules/auth/session";
 import { TeacherSubjectPage } from "@/modules/teacher/content";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { studentSession } from "@/modules/student/data";
 import { classDetail } from "@/modules/classes/data";
 import { classSubjects } from "@/modules/student/subjects";
@@ -12,6 +12,9 @@ export default async function Page({params, searchParams}: {params: Promise<{id:
   if (!/^[1-9]\d*$/.test(id) || !/^[1-9]\d*$/.test(subjectId)) notFound();
   const classroom = await classDetail(id, (await studentSession()).token);
   const subject = classSubjects(classroom).find(s => String(s.id) === subjectId);
-  if (!subject) notFound();
+  // A class/subject assignment may have been removed after a bookmarked card
+  // was rendered. Keep the student inside their authorized class instead of
+  // showing a misleading generic 404 page.
+  if (!subject) redirect(`/kelas?kelas=${encodeURIComponent(id)}&subject=unavailable`);
   return <StudentClassWorkspace classroom={classroom} subject={subject} tab={(await searchParams).tab} />;
 }

@@ -7,7 +7,7 @@ import { date, learningLabels, learningPaths } from "@/modules/student/helpers";
 import { subjectHref } from "@/modules/student/subjects";
 import type { Kind, Content } from "@/modules/student/types";
 import { teacherClasses, teacherContent, teacherSubject } from "./data";
-
+import { TeacherGradeExport } from "./grade-export";
 
 export const teachingStatus:Record<string,string>={draft:"Draf",published:"Diterbitkan",closed:"Ditutup"};
 export function TeacherContentRows({items,kind,classNames={},subjectNames={}}:{items:Content[];kind:Kind;classNames?:Record<number,string>;subjectNames?:Record<number,string>}) {
@@ -20,9 +20,9 @@ export async function TeacherLearningPage({kind}:{kind:Kind}) {
 export async function TeacherSubjectPage({classID,subjectID,tab}:{classID:string;subjectID:string;tab?:string}) {
   const {classroom,subject}=await teacherSubject(classID,subjectID);
   const kind:Kind=tab==="tugas"?"assignments":tab==="asesmen"?"assessments":"materials";
-  const items=await teacherContent(kind,classroom.id,subject.id);
+  const [items,assignments]=await Promise.all([teacherContent(kind,classroom.id,subject.id),teacherContent("assignments",classroom.id,subject.id)]);
   const path=subjectHref(classroom.id,subject.id);
-  return <div className="student-workspace teacher-workspace"><Link className="text-link back-link" href={`/kelas/${classID}`}>← {classroom.title}</Link><section className="panel student-class-header"><div className="page-heading"><div><span className="eyebrow">{classroom.title} · {classroom.year}</span><h1>{subject.name}</h1><p>Ruang pembelajaran yang Anda ampu.</p></div><ButtonLink variant="primary" href={kind==="assessments"?`/asesmen/baru?kelas=${classID}&mapel=${subjectID}`:`${path}/baru?jenis=${kind}`}>Tambah {learningLabels[kind].toLowerCase()}</ButtonLink></div><nav className="tabs" aria-label="Aktivitas mapel guru">{(["materials","assignments","assessments"] as Kind[]).map(k=><Link key={k} href={`${path}?tab=${learningPaths[k]}`} className={kind===k?"selected":""} aria-current={kind===k?"page":undefined}>{learningLabels[k]}</Link>)}</nav></section><TeacherContentRows items={items} kind={kind} classNames={{[classroom.id]:classroom.title}} subjectNames={{[subject.id]:subject.name}}/></div>;
+  return <div className="student-workspace teacher-workspace"><Link className="text-link back-link" href={`/kelas/${classID}`}>← {classroom.title}</Link><section className="panel student-class-header"><div className="page-heading"><div><span className="eyebrow">{classroom.title} · {classroom.year}</span><h1>{subject.name}</h1><p>Ruang pembelajaran yang Anda ampu.</p></div><ButtonLink variant="primary" href={kind==="assessments"?`/asesmen/baru?kelas=${classID}&mapel=${subjectID}`:`${path}/baru?jenis=${kind}`}>Tambah {learningLabels[kind].toLowerCase()}</ButtonLink></div><nav className="tabs" aria-label="Aktivitas mapel guru">{(["materials","assignments","assessments"] as Kind[]).map(k=><Link key={k} href={`${path}?tab=${learningPaths[k]}`} className={kind===k?"selected":""} aria-current={kind===k?"page":undefined}>{learningLabels[k]}</Link>)}</nav></section><TeacherGradeExport classID={classroom.id} subjectID={subject.id} className={classroom.title} subjectName={subject.name} assignments={assignments}/><TeacherContentRows items={items} kind={kind} classNames={{[classroom.id]:classroom.title}} subjectNames={{[subject.id]:subject.name}}/></div>;
 }
 export async function TeacherCreateContent({classID,subjectID,kind}:{classID:string;subjectID:string;kind:"materials"|"assignments"}) {
   const {classroom,subject}=await teacherSubject(classID,subjectID);

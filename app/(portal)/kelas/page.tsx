@@ -10,12 +10,12 @@ import { ClassManagement } from "@/modules/classes/class-management";
 import { ClassList } from "@/modules/classes/class-list";
 import type { Classroom, AcademicOptions } from "@/modules/classes/types";
 export const metadata = { title: "Kelas" };
-export default async function ClassesPage({searchParams}:{searchParams:Promise<{deleted?:string;kelas?:string}>}) {
-  const {deleted,kelas}=await searchParams;
+export default async function ClassesPage({searchParams}:{searchParams:Promise<{deleted?:string;kelas?:string;subject?:string}>}) {
+  const {deleted,kelas,subject}=await searchParams;
   const { identity } = await requireSession();
   if (["curriculum", "principal"].includes(identity.role)) return <MonitoringClasses items={await monitoringClasses()} />;
   if (identity.role === "teacher") return <TeacherClasses items={await teacherClasses()} userID={identity.user_id}/>;
-  if (identity.role === "student") return <StudentClasses key={kelas} items={await studentClasses()} selectedID={Number(kelas)} />;
+  if (identity.role === "student") return <><StudentClasses key={kelas} items={await studentClasses()} selectedID={Number(kelas)} />{subject === "unavailable" && <p className="form-message" role="status">Mata pelajaran tersebut sudah tidak dibagikan ke kelas ini. Pilih mata pelajaran yang tersedia.</p>}</>;
   const { data } = await authorizedData<{ data: Classroom[] }>("/api/classes");
   if (identity.role === "admin") {
     const options = await authorizedData<AcademicOptions>("/api/academic-options");
